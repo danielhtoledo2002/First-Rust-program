@@ -2,12 +2,13 @@ use std::io;
 use std::ptr::null;
 // Importamos try_read que devuelve un error si falla y el tipo de error que devuelve
 use text_io::{try_read, Error};
-
-struct Tienda {
+#[derive(Default)]
+struct Usuario {
     usuario : String,
     total: i32,
     cantidad: Vec<i32>,
     productos:Vec<String>,
+    dinero: i32,
 }
 enum Alimentos {
     Jamon,
@@ -15,8 +16,8 @@ enum Alimentos {
     Carne
 }
 
-impl  Tienda {
-    fn new(total: i32) -> Tienda { return Tienda { usuario: "".to_string(), total, cantidad: vec![0,0,0], productos: vec![] } }
+impl Usuario {
+    fn new(total: i32) -> Usuario { return Usuario { usuario: "".to_string(), total, cantidad: vec![0, 0, 0], productos: vec![], dinero:0 } }
     fn add_value(&mut self, alimento: Alimentos) {
         self.total += match alimento {
             Alimentos::Jamon => {
@@ -34,7 +35,7 @@ impl  Tienda {
         };
     }
 }
-fn main() {
+fn main()  {
 /*
     let mut s = String::from("hello");
 
@@ -44,7 +45,8 @@ fn main() {
     let mut cantidad:i32 = 0;
 
 
-    let mut usuario:Tienda = Tienda::new(0);
+
+    let mut usuario: Usuario = Usuario::new(0);
 
     loop {
         menu();
@@ -100,10 +102,8 @@ fn main() {
                     }
                     _ => {}
                 }
-
-
-
             }
+
             2=>{
                 cantidad = 0;
                 println!("{} Jamón", usuario.cantidad[0]);
@@ -115,14 +115,36 @@ fn main() {
                 }
                 println!("El total de productos es {}, y el preció a pagar es {}", cantidad, usuario.total);
             }
+
+            3=>{
+                println!("Ingrese el dinero: ");
+                let mut dinero: Result<i32, Error> = try_read!();
+                // Si la lectura resultó en error le decimos que no y que vuelva a intentar
+                let dinero = if dinero.is_err() {
+                    println!("Error: Ingresa una opción válida!!");
+                    continue;
+                } else {
+                    // Si no es error, desenvolvemos el valor en Ok(VALOR)
+                    dinero.unwrap()
+                };
+                 let cambio = if dinero >= usuario.total {
+                    dinero - usuario.total
+                }else {
+                     println!("No tienes el dinero suficiente para pagar");
+                     continue
+
+                 };
+                println!("El cambio es {}", cambio);
+                println!("Gracias por su compra");
+                usuario = Usuario::default();
+                usuario = Usuario::new(0);
+            }
+            
+            4=>{break}
             _ => {}
         };
     }
 }
-
-
-
-
 fn menu (){
     println!("----------------Menu--------------");
     println!("------------Bienvenido----------");
@@ -140,7 +162,6 @@ fn submenu(){
     println!("-- 3. Carne -- 400 $ el kilo");
     println!("Ingrese la opción que desea: ");
 }
-
 
 
 /*
