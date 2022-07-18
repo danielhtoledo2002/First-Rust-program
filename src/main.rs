@@ -108,7 +108,7 @@ fn main()  {
             }
 
             2=>{
-                cantidad = show_carrito(& mut cantidad, &mut usuario);
+                show_carrito(& mut cantidad, &mut usuario);
                 println!("{} Jamón", usuario.cantidad[0]);
                 println!("{} Queso", usuario.cantidad[1]);
                 println!("{} Carne", usuario.cantidad[2]);
@@ -121,7 +121,7 @@ fn main()  {
             }
 
             4=>{
-                cantidad = show_carrito(& mut cantidad, &mut usuario);
+                show_carrito(& mut cantidad, &mut usuario);
                 if cantidad == 0{
                     println!("No hay productos que pagar");
                 }
@@ -181,11 +181,11 @@ fn clean_usuario(cantidad :& mut i32) -> Usuario{
     *cantidad = 0;
     return usuario
 }
-fn show_carrito(  cantidad: & mut i32, usuario: &mut Usuario)-> i32{
+fn show_carrito(  cantidad: & mut i32, usuario: &mut Usuario){
     for i in 0..usuario.cantidad.len(){
         *cantidad += usuario.cantidad[i];
     }
-    *cantidad
+
 }
 /* referencia ejemplo
 fn change(some_string: &mut String) {
